@@ -39,5 +39,22 @@ def position_probability_given_cables(M: int, T: int, c: int, j: int,
         position_probability_given_cables(M=4, T=16, c=4, j=0, smaller_numbers_count=0)
         # Should be approximately 0.728
     """
-    # TODO: Implement this function
-    raise NotImplementedError("position_probability_given_cables not yet implemented")
+
+    total_prob = 0
+    # j is 0-indexed!
+    # loop through all possible k's
+    for k in range(1, min(M, c)+1):
+        # loop through all possible s's
+        # j = 2, k = 1 -> we need at least 2 s for k to be at position j
+        # j = 2, k = 4 -> j - k + 1 = -1, cannot have negative s!
+        # j = 2, k = 2 -> maximum 2 s for k to still have a chance to be at j : XXJXXX
+        min_s = max(0, j - k + 1)
+        max_s = min(j, c-k)
+        for s in range(min_s,max_s+1):
+            # add the probability of this event
+            prob_s = hypergeometric_probability(T, smaller_numbers_count, c, s) 
+            prob_k = hypergeometric_probability(T - smaller_numbers_count, M, c - s, k)
+            total_prob += prob_s * prob_k
+    return total_prob
+
+
