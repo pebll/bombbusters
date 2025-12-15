@@ -20,8 +20,11 @@ def factorial(n: int) -> int:
         factorial(3) = 6
         factorial(5) = 120
     """
-    # TODO: Implement this function
-    raise NotImplementedError("factorial not yet implemented")
+    if n < 0:
+        return 0
+    if n == 0:
+        return 1
+    return n * factorial(n-1)
 
 
 def binomial_coefficient(n: int, k: int) -> int:
@@ -43,5 +46,9 @@ def binomial_coefficient(n: int, k: int) -> int:
         binomial_coefficient(10, 10) = 1
         binomial_coefficient(5, 7) = 0 (k > n)
     """
-    # TODO: Implement this function
-    raise NotImplementedError("binomial_coefficient not yet implemented")
+    # Efficient calculations: it's bullshit right?
+    # C(10, 9) = 10! / (9! * 1!) = 20 computations
+    # C(10, 1) = 10! / (1! * (10 -1!)) = 20 computations
+    if k > n or n < 0 or k < 0:
+        return 0
+    return factorial(n) / (factorial(k) * factorial(n-k))

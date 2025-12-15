@@ -13,10 +13,12 @@ n! = n × (n-1) × (n-2) × ... × 2 × 1
 ```
 
 **Special cases:**
+
 - 0! = 1 (by definition)
 - 1! = 1
 
 **Examples:**
+
 - 3! = 3 × 2 × 1 = 6
 - 5! = 5 × 4 × 3 × 2 × 1 = 120
 
@@ -27,19 +29,24 @@ n! = n × (n-1) × (n-2) × ... × 2 × 1
 The **binomial coefficient** C(n, k) (also written as "n choose k" or `(n k)`) counts the number of ways to choose k items from n items, **without regard to order**.
 
 **Formula:**
+
 ```
 C(n, k) = n! / (k! × (n-k)!)
 ```
 
 **Examples:**
+
 - C(5, 2) = 5! / (2! × 3!) = 120 / (2 × 6) = 10
 - C(10, 0) = 1 (there's exactly one way to choose nothing)
+  10! / 0! * 10! = 10!/10! = 1
 - C(10, 10) = 1 (there's exactly one way to choose everything)
+  10! / 10! * (10-10)! = 1
 
 **Properties:**
+
 1. **Symmetry**: C(n, k) = C(n, n-k)
    - Example: C(10, 3) = C(10, 7) = 120
-2. **Edge cases**: 
+2. **Edge cases**:
    - C(n, 0) = 1 for any n ≥ 0
    - C(n, n) = 1 for any n ≥ 0
    - C(n, k) = 0 if k > n or k < 0
@@ -47,6 +54,7 @@ C(n, k) = n! / (k! × (n-k)!)
 **Meaning**: C(n, k) is the number of ways to choose k items from n items.
 
 **Example**: How many ways can you choose 2 books from 5 books?
+
 - Answer: C(5, 2) = 10 ways
 
 ## Efficient Computation
@@ -58,12 +66,14 @@ C(n, k) = (n × (n-1) × ... × (n-k+1)) / (k × (k-1) × ... × 1)
 ```
 
 **Algorithm:**
+
 1. Use symmetry: if k > n/2, compute C(n, n-k) instead
 2. Multiply n, n-1, ..., n-k+1
 3. Divide by k, k-1, ..., 1
 4. Use integer division to avoid floating point errors
 
 **Example**: C(10, 3)
+
 - Using symmetry: C(10, 3) = C(10, 7), so use k=3 (smaller)
 - Numerator: 10 × 9 × 8 = 720
 - Denominator: 3 × 2 × 1 = 6
@@ -72,6 +82,7 @@ C(n, k) = (n × (n-1) × ... × (n-k+1)) / (k × (k-1) × ... × 1)
 ## Why This Matters
 
 Binomial coefficients are fundamental building blocks for probability calculations. They appear everywhere:
+
 - Calculating probabilities of combinations
 - Counting arrangements
 - Computing distributions
