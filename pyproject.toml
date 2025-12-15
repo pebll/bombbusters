@@ -1,0 +1,8 @@
+[tool.pyright]
+ignore = ["**/matplotlib/**"]
+
+[tool.basedpyright]
+typeCheckingMode = "standard"
+reportUnknownMemberType = false
+reportUnknownVariableType = false
+reportUnknownArgumentType = false
