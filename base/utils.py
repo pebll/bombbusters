@@ -1,14 +1,19 @@
+"""
+Base utilities for printing and plotting distributions.
+"""
+
 import matplotlib.pyplot as plt
 
+
 def print_distribution(distribution: list[list[float]], precision: int = 1):
+    """Print distribution to console"""
     for n, number in enumerate(distribution):
         distrib_str = ", ".join([f"{100*p:.{precision}f}%" for p in number])
         print(f"{n+1}: [{distrib_str}]")
 
 
-
-
 def plot_distribution(distribution: list[list[float]], precision: int = 1):
+    """Plot distribution with interactive buttons"""
     # Create figure with dropdown for individual histograms + overview
     fig = plt.figure(figsize=(14, 8))
     
