@@ -44,7 +44,9 @@ def exact_distribution(P: int, N: int, M: int) -> list[list[float]]:
         # loop through all positions
         for j in range(max_positions):
             smaller_numbers_count = i * M
-            prob = position_probability_given_cables(M, T, c, j, smaller_numbers_count)
+            prob_C = position_probability_given_cables(M, T, c, j, smaller_numbers_count)
+            prob_E = position_probability_given_cables(M, T, c+1, j, smaller_numbers_count)
+            prob = ((P-E)/P) * prob_C + (E/P) * prob_E
             positions_probs.append(prob)
         distribution.append(positions_probs)
     return distribution

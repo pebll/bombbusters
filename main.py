@@ -19,10 +19,10 @@ try:
 except (ImportError, NotImplementedError):
     from lecture_04_exact_distribution.solution import exact_distribution
 
-NUMBER_OF_PLAYERS = 4
-AVAILABLE_NUMBERS = 4 
+NUMBER_OF_PLAYERS = 5
+AVAILABLE_NUMBERS = 8 
 NUMBER_INSTANCES = 4
-NUMBER_OF_SAMPLES = 10000
+NUMBER_OF_SAMPLES = 100
 
 def main():
     print("=" * 60)
@@ -71,7 +71,7 @@ def main():
 
     # Plot both distributions
     print("\nPlotting distributions...")
-    utils.plot_distribution(monte_carlo_distrib)
+    # utils.plot_distribution(monte_carlo_distrib)
     utils.plot_distribution(exact_distrib)
 
     print("\n" + "=" * 60)
