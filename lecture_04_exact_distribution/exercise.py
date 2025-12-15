@@ -12,7 +12,7 @@ except (ImportError, NotImplementedError):
     from lecture_03_position_probability.solution import position_probability_given_cables
 
 
-def exact_distribution(number_of_players: int, available_numbers: int, number_instances: int) -> list[list[float]]:
+def exact_distribution(P: int, N: int, M: int) -> list[list[float]]:
     """
     Calculate exact probability distribution using combinatorics.
     
@@ -33,5 +33,19 @@ def exact_distribution(number_of_players: int, available_numbers: int, number_in
         dist = exact_distribution(4, 4, 4)
         # dist[0][0] should be approximately 0.728
     """
-    # TODO: Implement this function
-    raise NotImplementedError("exact_distribution not yet implemented")
+    distribution : list[list[float]] = []
+    T = N * M # total cables
+    c = int(T / P) # cables per player
+    E = T % P # number of players with c + 1 cables
+    max_positions = c if E == 0 else c+1
+    # loop through all numbers
+    for i in range(N):
+        positions_probs: list[float] = []
+        # loop through all positions
+        for j in range(max_positions):
+            smaller_numbers_count = i * M
+            prob = position_probability_given_cables(M, T, c, j, smaller_numbers_count)
+            positions_probs.append(prob)
+        distribution.append(positions_probs)
+    return distribution
+
