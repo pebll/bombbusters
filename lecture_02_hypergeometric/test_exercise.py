@@ -29,7 +29,7 @@ def test_hypergeometric_probability():
         (10, 5, 3, 3, 0.08333333333333333),  # 3 red
         (10, 5, 3, 5, 0.0),  # Invalid: k > n
         (10, 5, 3, -1, 0.0),  # Invalid: k < 0
-        (20, 10, 5, 3, 0.360),  # Approximate
+        (20, 10, 5, 3, 0.348297213),  # C(10,3) * C(10,2) / C(20,5) = 5400/15504 ≈ 0.348297
     ]
     
     all_passed = True

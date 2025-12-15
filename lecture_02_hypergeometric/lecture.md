@@ -7,6 +7,7 @@ The **hypergeometric distribution** describes the probability of getting exactly
 ## Problem Setup
 
 Imagine you have:
+
 - A population of **N** items total
 - **K** of these items are "successes" (e.g., red balls)
 - **N - K** items are "failures" (e.g., blue balls)
@@ -24,6 +25,7 @@ P(k successes) = C(K, k) × C(N-K, n-k) / C(N, n)
 Where C(n, k) is the binomial coefficient from Lecture 1.
 
 **Breaking it down:**
+
 - **C(K, k)**: Ways to choose k successes from K available successes
 - **C(N-K, n-k)**: Ways to choose (n-k) failures from (N-K) available failures
 - **C(N, n)**: Total ways to choose n items from N items
@@ -33,6 +35,7 @@ Where C(n, k) is the binomial coefficient from Lecture 1.
 **Problem**: You have 10 balls: 5 red and 5 blue. You draw 3 balls without replacement. What's the probability you get exactly 2 red balls?
 
 **Solution**:
+
 - N = 10 (total balls)
 - K = 5 (red balls = successes)
 - n = 3 (balls drawn)
@@ -44,6 +47,18 @@ P(2 red) = C(5, 2) × C(5, 1) / C(10, 3)
          = 50 / 120
          = 5/12
          ≈ 0.4167
+```
+
+- N = 10 (total balls)
+- K = 5 (red balls = successes)
+- n = 1 (balls drawn)
+- k = 1 (red balls we want)
+
+```
+P(2 red) = C(5, 1) × C(5, 0) / C(10, 1)
+         = (5! / (1! * 4!)) * 1 / 10 
+         = 5 / 10
+         = 0.5 -> expected
 ```
 
 ## Properties
@@ -63,6 +78,7 @@ P(2 red) = C(5, 2) × C(5, 1) / C(10, 3)
 ## Why This Matters
 
 In bombbusters, we use hypergeometric distribution to calculate:
+
 - Probability a player gets exactly k cables of a specific number
 - This is the foundation for calculating position probabilities
 
