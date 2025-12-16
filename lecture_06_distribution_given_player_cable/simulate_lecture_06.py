@@ -13,6 +13,7 @@ parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, parent_dir)
 
 from simulate_base import GameSimulationBase
+import matplotlib.pyplot as plt
 
 # Try importing from exercise first, fall back to solution
 try:
@@ -20,25 +21,22 @@ try:
 except (ImportError, NotImplementedError):
     from lecture_06_distribution_given_player_cable.solution import exact_distribution_given_player_cables
 
+# Import exercise 5 for Player 0 distribution
+try:
+    from lecture_05_distribution_given_cable_count.exercise import exact_distribution_given_cable_count
+except (ImportError, NotImplementedError):
+    from lecture_05_distribution_given_cable_count.solution import exact_distribution_given_cable_count
+
 
 class GameSimulationLecture06(GameSimulationBase):
     """Simulation for Lecture 6: Distribution Given Player Cable"""
     
     def __init__(self):
         super().__init__()
-        self.distribution = None  # Distribution for other players given Player 0's cables
         
     def sample_new_game(self, P=None, N=None, M=None):
-        """Sample a new game and calculate distribution given Player 0's cables"""
+        """Sample a new game"""
         super().sample_new_game(P, N, M)
-        # Calculate distribution for other players given Player 0's cables
-        player_0_cables = sorted(self.game[0])  # Ensure sorted
-        self.distribution = exact_distribution_given_player_cables(
-            self.number_of_players, 
-            self.available_numbers, 
-            self.number_instances, 
-            player_0_cables
-        )
         self.update_display()
         
     def get_distribution(self):
@@ -46,34 +44,34 @@ class GameSimulationLecture06(GameSimulationBase):
         if self.game is None:
             return None
             
-        # For Player 0, show deterministic distribution (we know their cables)
+        player_0_cables = sorted(self.game[0])  # Ensure sorted
+        
+        # For Player 0, show distribution from exercise 5 (distribution given cable count)
+        # This shows how random/possible their draw was
         if self.selected_player == 0:
-            player_0_cables = sorted(self.game[0])
             cable_count = len(player_0_cables)
             
-            # Create deterministic distribution
-            # For each number, probability is 1.0 at positions where it appears, 0.0 elsewhere
-            # But we need to distribute probability across all positions where the number appears
-            distribution = []
-            for num_idx in range(self.available_numbers):
-                target_num = num_idx + 1  # Convert to 1-indexed
-                # Find all positions where this number appears
-                positions_with_num = [pos for pos, cable in enumerate(player_0_cables) if cable == target_num]
-                num_count = len(positions_with_num)
-                
-                probs = []
-                for pos in range(cable_count):
-                    if pos in positions_with_num:
-                        # If number appears at this position, probability is 1.0
-                        # (since we know exactly where it is)
-                        probs.append(1.0)
-                    else:
-                        probs.append(0.0)
-                distribution.append(probs)
+            # Use exercise 5: distribution given cable count
+            distribution = exact_distribution_given_cable_count(
+                self.number_of_players,
+                self.available_numbers,
+                self.number_instances,
+                cable_count
+            )
             return distribution
         
-        # For other players, use the calculated distribution
-        return self.distribution
+        # For other players, calculate distribution using their actual cable count
+        selected_player_cables = self.game[self.selected_player]
+        cable_count = len(selected_player_cables)
+        
+        distribution = exact_distribution_given_player_cables(
+            self.number_of_players, 
+            self.available_numbers, 
+            self.number_instances, 
+            player_0_cables,
+            c=cable_count  # Pass the selected player's cable count
+        )
+        return distribution
         
     def get_info_text(self):
         """Get information text for the info panel"""
@@ -87,15 +85,41 @@ class GameSimulationLecture06(GameSimulationBase):
         info_text += f"Your cables: {player_0_cables}\n"
         info_text += f"Number of cables: {len(player_0_cables)}\n\n"
         info_text += f"Selected Player: {self.selected_player}\n"
-        info_text += f"Player {self.selected_player}'s cables: {selected_cables}\n"
-        info_text += f"Player {self.selected_player}'s cable count: {len(selected_cables)}\n\n"
-        info_text += "Distribution: CONDITIONAL\n"
-        info_text += f"Given Player 0 has {player_0_cables}"
+        if self.selected_player == 0:
+            info_text += f"Distribution: EXERCISE 5\n"
+            info_text += f"Distribution given cable count ({len(player_0_cables)})\n"
+            info_text += f"This shows how random/possible your draw was"
+        else:
+            info_text += f"Player {self.selected_player}'s cables: {selected_cables}\n"
+            info_text += f"Player {self.selected_player}'s cable count: {len(selected_cables)}\n\n"
+            info_text += "Distribution: CONDITIONAL\n"
+            info_text += f"Given Player 0 has {player_0_cables}"
+            info_text += f"\nAND Player {self.selected_player} has {len(selected_cables)} cables"
         return info_text
         
     def get_window_title(self):
         """Get the window title"""
         return 'Bombbusters Game Simulation - Lecture 6: Distribution Given Player Cable'
+    
+    def update_display(self):
+        """Update the display with Player 0 band and current game state"""
+        # Call parent update first
+        super().update_display()
+        
+        # Add Player 0 band at the top (below title)
+        if self.game is not None and self.fig is not None:
+            player_0_cables = sorted(self.game[0])
+            # Create a text annotation at the top of the figure (below suptitle)
+            player_0_text = f"Player 0 (YOU): {player_0_cables}"
+            self.fig.text(0.5, 0.96, player_0_text, 
+                         ha='center', va='top',
+                         fontsize=11, fontweight='bold',
+                         bbox=dict(boxstyle='round,pad=0.4', 
+                                  facecolor='lightblue', 
+                                  alpha=0.85,
+                                  edgecolor='darkblue',
+                                  linewidth=2))
+            plt.draw()
 
 
 def main():
@@ -104,8 +128,8 @@ def main():
     print("BOMBBUSTERS GAME SIMULATION - Lecture 6")
     print("=" * 60)
     print("You are Player 0. Click buttons to view distributions for other players.")
-    print("The distribution shown is CONDITIONAL on your actual cables.")
-    print("(Same distribution applies to all other players given your cables)")
+    print("The distribution shown is CONDITIONAL on your actual cables")
+    print("AND the selected player's cable count.")
     print("Click 'New Game' to change game parameters.")
     print()
     

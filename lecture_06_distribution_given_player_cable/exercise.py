@@ -27,7 +27,7 @@ def smaller_numbers_count(cables: list[int], i: int) -> int:
         count += 1
     return count
 
-def exact_distribution_given_player_cables(P: int, N: int, M: int, player_cables: list[int]) -> list[list[float]]:
+def exact_distribution_given_player_cables(P: int, N: int, M: int, player_cables: list[int], c: int|None = None) -> list[list[float]]:
     """
     Calculate exact probability distribution for player 1 given that player 0 has specific cables.
     
@@ -41,27 +41,31 @@ def exact_distribution_given_player_cables(P: int, N: int, M: int, player_cables
         available_numbers: Number of different numbers (N)
         number_instances: Number of instances of each number (M)
         player_cables: Sorted list of numbers representing player 0's cables
+        c: Optional cable count for player 1. If provided, calculates distribution assuming
+           player 1 has exactly c cables. If None, averages over all possible cable counts.
         
     Returns:
         Distribution matrix: result[i][j] = P(number i+1 at position j for player 1 | player 0 has player_cables)
+        If c is provided, this is conditional on player 1 having exactly c cables.
         
     Example:
         # 4 players, 4 numbers, 4 instances each, player 0 has [1, 1, 2, 3]
+        # Without cable count (averages over all possible cable counts)
         dist = exact_distribution_given_player_cables(4, 4, 4, [1, 1, 2, 3])
-        # dist[0][0] should be the probability that number 1 appears at position 0 for player 1
+        # With cable count (assumes player 1 has exactly 4 cables)
+        dist = exact_distribution_given_player_cables(4, 4, 4, [1, 1, 2, 3], c=4)
     """
     distribution : list[list[float]] = []
     cables = starting_cables(N, M)
-    print(f"Cables before: {cables}")
     for player_cable in player_cables:
         cables.remove(player_cable)
-    print(f"Cables after: {cables}")
     P = P - 1 # one player already got his cables
-    T = len(cables) # total cables
-
-    c = int(T / P) # cables per player
-    E = T % P # number of players with c + 1 cables
-    max_positions = c if E == 0 else c+1
+    T = len(cables) # total cables remaining
+    # Original behavior: average over all possible cable counts
+    c_min = int(T / P) # cables per player (minimum)
+    E = T % P # number of players with c_min + 1 cables
+    max_positions = c_min if E == 0 else c_min+1
+    max_positions = c if c else max_positions
     # loop through all numbers
     for i in range(N):
         positions_probs: list[float] = []
@@ -69,9 +73,12 @@ def exact_distribution_given_player_cables(P: int, N: int, M: int, player_cables
         smaller_numbers = smaller_numbers_count(cables, i+1)
         # loop through all positions
         for j in range(max_positions):
-            prob_C = position_probability_given_cables(M, T, c, j, smaller_numbers)
-            prob_E = position_probability_given_cables(M, T, c+1, j, smaller_numbers)
-            prob = ((P-E)/P) * prob_C + (E/P) * prob_E
+            if c:
+                prob = position_probability_given_cables(M, T, c, j, smaller_numbers)
+            else:
+                prob_C = position_probability_given_cables(M, T, c_min, j, smaller_numbers)
+                prob_E = position_probability_given_cables(M, T, c_min+1, j, smaller_numbers)
+                prob = ((P-E)/P) * prob_C + (E/P) * prob_E
             positions_probs.append(prob)
         distribution.append(positions_probs)
     return distribution

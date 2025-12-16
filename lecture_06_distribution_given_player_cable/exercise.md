@@ -10,18 +10,29 @@ Implement `exact_distribution_given_player_cables` to calculate the probability 
 
 ## Task: Implement Distribution Given Player Cables
 
-Create a function `exact_distribution_given_player_cables(number_of_players: int, available_numbers: int, number_instances: int, player_cables: list[int]) -> list[list[float]]` that:
+Create a function `exact_distribution_given_player_cables(number_of_players: int, available_numbers: int, number_instances: int, player_cables: list[int], c: int = None) -> list[list[float]]` that:
 
 1. Counts how many of each number remain after removing `player_cables` from the pool
 2. Calculates T_remaining = T - len(player_cables)
 3. Calculates P_remaining = number_of_players - 1
-4. Calculates cables per remaining player:
+
+**If `c` is provided (cable count for player 1):**
+4a. Set max_position = c (player 1 has exactly c cables)
+5a. For each number i (0 to available_numbers-1):
+   - Calculate M_remaining[i] = number_instances - count of number (i+1) in player_cables
+   - Calculate smaller_numbers_count_remaining = sum of remaining cables with numbers < (i+1)
+   - For each position j (0 to c-1):
+     - Calculate probability directly using `position_probability_given_cables(M_remaining[i], T_remaining, c, j, smaller_numbers_count_remaining)`
+     - Store in distribution[i][j]
+
+**If `c` is None (default, average over all possible cable counts):**
+4b. Calculates cables per remaining player:
    - min_cables = T_remaining // P_remaining
    - extra_cables = T_remaining % P_remaining
    - c₁ = min_cables + 1
    - c₂ = min_cables
    - E_remaining = extra_cables
-5. For each number i (0 to available_numbers-1):
+5b. For each number i (0 to available_numbers-1):
    - Calculate M_remaining[i] = number_instances - count of number (i+1) in player_cables
    - Calculate smaller_numbers_count_remaining = sum of remaining cables with numbers < (i+1)
    - For each position j (0 to max_position-1):
@@ -29,9 +40,10 @@ Create a function `exact_distribution_given_player_cables(number_of_players: int
      - Calculate probability for c₂ case (if position < c₂ and M_remaining[i] > 0)
      - Weight by (E_remaining/P_remaining) and ((P_remaining-E_remaining)/P_remaining)
      - Store in distribution[i][j]
+
 6. Return the distribution
 
-**Return format**: `list[list[float]]` where `result[i][j]` is the probability that number (i+1) appears at position j for player 1, **given** that player 0 has the cables specified in `player_cables`.
+**Return format**: `list[list[float]]` where `result[i][j]` is the probability that number (i+1) appears at position j for player 1, **given** that player 0 has the cables specified in `player_cables`. If `c` is provided, this is also conditional on player 1 having exactly `c` cables (similar to Exercise 5).
 
 **Implementation hints:**
 1. Import position_probability_given_cables from lecture_03_position_probability.solution
@@ -45,9 +57,15 @@ Create a function `exact_distribution_given_player_cables(number_of_players: int
 **Example:**
 ```python
 # 4 players, 4 numbers, 4 instances each, player 0 has [1, 1, 2, 3]
+# Without cable count (averages over all possible cable counts)
 dist = exact_distribution_given_player_cables(4, 4, 4, [1, 1, 2, 3])
 # dist[0][0] should be the probability that number 1 appears at position 0 for player 1
 # given that player 0 has [1, 1, 2, 3]
+
+# With cable count (assumes player 1 has exactly 4 cables)
+dist = exact_distribution_given_player_cables(4, 4, 4, [1, 1, 2, 3], c=4)
+# dist[0][0] should be the probability that number 1 appears at position 0 for player 1
+# given that player 0 has [1, 1, 2, 3] AND player 1 has exactly 4 cables
 ```
 
 ## Testing

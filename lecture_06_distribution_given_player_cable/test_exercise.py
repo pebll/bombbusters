@@ -111,6 +111,83 @@ def test_exact_distribution_given_player_cables():
     return all_passed
 
 
+def test_exact_distribution_given_player_cables_with_cable_count():
+    """Test exact_distribution_given_player_cables function with cable count parameter"""
+    print("=" * 60)
+    print("Testing exact_distribution_given_player_cables with cable count")
+    print("=" * 60)
+    
+    test_cases = [
+        (4, 4, 4, [1, 1, 2, 3], 4),  # Standard case, c=4
+        (4, 4, 4, [1, 2, 3, 4], 3),  # One of each number, c=3
+        (3, 3, 3, [1, 1, 1], 3),     # All same number, c=3
+        (4, 4, 4, [1, 1, 1, 1], 4),  # All number 1, c=4
+    ]
+    
+    all_passed = True
+    for P, N, M, player_cables, c in test_cases:
+        try:
+            result = exercise.exact_distribution_given_player_cables(P, N, M, player_cables, c=c)
+            solution_result = solution.exact_distribution_given_player_cables(P, N, M, player_cables, c=c)
+            
+            # Check structure
+            if len(result) != N:
+                print(f"✗ Wrong number of numbers: {len(result)} != {N}")
+                all_passed = False
+                continue
+            
+            # Check that we have positions
+            if len(result) > 0 and len(result[0]) == 0:
+                print(f"✗ No positions in result")
+                all_passed = False
+                continue
+            
+            # Check that max positions equals c
+            if len(result) > 0:
+                max_positions = max(len(probs) for probs in result)
+                if max_positions != c:
+                    print(f"✗ Wrong number of positions: {max_positions} != {c}")
+                    all_passed = False
+                    continue
+            
+            # Check probabilities sum to 1 for each position (if there are positions)
+            if len(result) > 0 and len(result[0]) > 0:
+                max_positions = max(len(probs) for probs in result)
+                for pos in range(max_positions):
+                    sum_prob = sum(result[n][pos] if pos < len(result[n]) else 0.0 
+                                  for n in range(N))
+                    if abs(sum_prob - 1.0) > 1e-5:
+                        print(f"✗ Probabilities don't sum to 1 at position {pos}: {sum_prob}")
+                        all_passed = False
+            
+            # Compare with solution
+            max_len = max(max(len(r), len(s)) for r, s in zip(result, solution_result))
+            diff_total = 0.0
+            for i in range(N):
+                for j in range(max_len):
+                    r_val = result[i][j] if j < len(result[i]) else 0.0
+                    s_val = solution_result[i][j] if j < len(solution_result[i]) else 0.0
+                    diff_total += abs(r_val - s_val)
+            
+            tolerance = 1e-4
+            status = "✓" if diff_total < tolerance else "✗"
+            if diff_total >= tolerance:
+                all_passed = False
+            print(f"{status} Distribution for P={P}, N={N}, M={M}, cables={player_cables}, c={c}: total diff = {diff_total:.6f}")
+            
+        except NotImplementedError:
+            print(f"✗ Distribution for P={P}, N={N}, M={M}, cables={player_cables}, c={c} not yet implemented")
+            all_passed = False
+        except Exception as e:
+            print(f"✗ Distribution for P={P}, N={N}, M={M}, cables={player_cables}, c={c} raised exception: {e}")
+            import traceback
+            traceback.print_exc()
+            all_passed = False
+    
+    print()
+    return all_passed
+
+
 def main():
     """Run all tests"""
     print("\n" + "=" * 60)
@@ -118,7 +195,8 @@ def main():
     print("=" * 60 + "\n")
     
     results = []
-    results.append(("exact_distribution_given_player_cables", test_exact_distribution_given_player_cables()))
+    results.append(("exact_distribution_given_player_cables (without c)", test_exact_distribution_given_player_cables()))
+    results.append(("exact_distribution_given_player_cables (with c)", test_exact_distribution_given_player_cables_with_cable_count()))
     
     print("=" * 60)
     print("TEST SUMMARY")
