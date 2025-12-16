@@ -15,7 +15,7 @@ from lecture_05_distribution_given_cable_count import exercise
 from lecture_05_distribution_given_cable_count import solution
 
 
-def test_exact_distribution_given_cables():
+def test_exact_distribution_given_cable_count():
     """Test exact_distribution_given_cables function"""
     print("=" * 60)
     print("Testing exact_distribution_given_cables")
@@ -31,8 +31,8 @@ def test_exact_distribution_given_cables():
     all_passed = True
     for P, N, M, c in test_cases:
         try:
-            result = exercise.exact_distribution_given_cables(P, N, M, c)
-            solution_result = solution.exact_distribution_given_cables(P, N, M, c)
+            result = exercise.exact_distribution_given_cable_count(P, N, M, c)
+            solution_result = solution.exact_distribution_given_cable_count(P, N, M, c)
             
             # Check structure
             if len(result) != N:
@@ -78,8 +78,8 @@ def test_exact_distribution_given_cables():
     print("\nVerifying probabilities sum to 1.0 for each position:")
     P, N, M, c = 4, 4, 4, 4
     try:
-        result = exercise.exact_distribution_given_cables(P, N, M, c)
-        solution_result = solution.exact_distribution_given_cables(P, N, M, c)
+        result = exercise.exact_distribution_given_cable_count(P, N, M, c)
+        solution_result = solution.exact_distribution_given_cable_count(P, N, M, c)
         for pos in range(c):
             sum_prob = sum(result[n][pos] for n in range(N))
             solution_sum = sum(solution_result[n][pos] for n in range(N))
@@ -108,7 +108,7 @@ def main():
     print("=" * 60 + "\n")
     
     results = []
-    results.append(("exact_distribution_given_cables", test_exact_distribution_given_cables()))
+    results.append(("exact_distribution_given_cables", test_exact_distribution_given_cable_count()))
     
     print("=" * 60)
     print("TEST SUMMARY")

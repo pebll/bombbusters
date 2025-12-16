@@ -5,7 +5,7 @@ Solution for Exercise 5: Distribution Given Cable Count
 from lecture_03_position_probability.solution import position_probability_given_cables
 
 
-def exact_distribution_given_cables(number_of_players: int, available_numbers: int, 
+def exact_distribution_given_cable_count(number_of_players: int, available_numbers: int, 
                                     number_instances: int, cables: int) -> list[list[float]]:
     """
     Calculate exact probability distribution given that a player has exactly c cables.
