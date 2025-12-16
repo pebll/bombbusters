@@ -13,16 +13,24 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from base import bombusters as bb_base
 from base import utils
+# Import configuration
+from simulation_config import (
+    DEFAULT_NUMBER_OF_PLAYERS,
+    DEFAULT_AVAILABLE_NUMBERS,
+    DEFAULT_NUMBER_INSTANCES,
+    DEFAULT_NUMBER_OF_SAMPLES
+)
 # Try importing from exercise first (your implementation), fall back to solution
 try:
     from lecture_04_exact_distribution.exercise import exact_distribution
 except (ImportError, NotImplementedError):
     from lecture_04_exact_distribution.solution import exact_distribution
 
-NUMBER_OF_PLAYERS = 5
-AVAILABLE_NUMBERS = 8 
-NUMBER_INSTANCES = 4
-NUMBER_OF_SAMPLES = 100
+# Use defaults from config file
+NUMBER_OF_PLAYERS = DEFAULT_NUMBER_OF_PLAYERS
+AVAILABLE_NUMBERS = DEFAULT_AVAILABLE_NUMBERS
+NUMBER_INSTANCES = DEFAULT_NUMBER_INSTANCES
+NUMBER_OF_SAMPLES = DEFAULT_NUMBER_OF_SAMPLES
 
 def main():
     print("=" * 60)
